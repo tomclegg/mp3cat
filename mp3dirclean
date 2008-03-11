@@ -1,0 +1,8 @@
+#!/bin/sh
+
+while :
+do
+    ls -t "$MP3DIR"/t*.mp3 | tail -n +"$N" | xargs rm 2>/dev/null
+    sleep 60
+done
+EOF

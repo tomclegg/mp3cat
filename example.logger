@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# record line input from sound card, encode 32 kbps, save in 14
+# megabyte (1 hour) files in ./mp3dir/
+#
+# this is installed in /var/service/mp3log/run
+
+exec env - PATH="/bin:/usr/bin:/usr/sbin:/usr/local/bin" HOME=`pwd` \
+    nice --5 setuidgid mp3log sh <<EOF
+mixer vol 100 pcm 0
+mixer igain 100
+mixer line 100
+mixer =rec line
+killall esd esdrec lame fetch
+exec \
+    esdrec | \
+    (read a; exec lame -h -x -b 32 -a - -) | \
+    mp3cat --clean --size `expr 60 \* 60 \* 4096` - mp3dir \
+    2>&1
+EOF

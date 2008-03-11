@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Remove old mp3 files from directories starting with mp3dir.  If a
+# file called N exists in an mp3dir directory, it contains a number of
+# files to keep; default is to keep 168 files.
+#
+# this is installed in /var/service/mp3loggerc/run
+
+PATH=/bin:/usr/bin:/usr/local/bin
+
+exec setuidgid mp3logger env - PATH="$PATH" sh <<'EOF'
+while :
+do
+  for x in mp3dir*
+  do
+    N=`cat $x/N`
+    if [ "$N" = "" ] ; then N=168 ; fi
+    ls -t $x/t*.mp3 | tail -n +$N | xargs rm 2>/dev/null
+  done
+  sleep 60
+done
+EOF

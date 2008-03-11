@@ -1,0 +1,81 @@
+Installation notes for mp3cat
+
+To compile and install the mp3cat program:
+
+  tar xzf mp3cat-0.1.tar.gz
+  cd mp3cat-0.1
+  make install
+
+To clean up an MP3 file by removing everything other than valid MP3
+frames:
+
+  mp3cat - - < dirty.mp3 > clean.mp3
+
+** The following installation procedures have not been tested!  If you
+** have problems, write to tom@tomclegg.net and I might be able to
+** help you.
+
+For the following applications, you'll also need Daniel J. Bernstein's
+daemontools software.  See http://cr.yp.to/daemontools.html
+
+To set up a logger, recording the sound card's line input:
+
+  pw useradd mp3logger
+  mkdir -p /var/service/mp3logger
+  cp example.logger /var/service/mp3logger/run
+  cd /var/service/mp3logger
+  chmod +x run
+  ln -s /PATH/TO/MP3/STORAGE mp3dir
+  mkdir log log/main
+  pw useradd mp3loggerl -d /var/service/mp3logger
+  chown mp3loggerl log/main
+  chmod +t .
+  (echo '#!/bin/sh'; echo 'exec setuidgid mp3loggerl multilog t s99999 n3 ./main/') > log/run
+  chmod +x log/run
+  cd /service
+  ln -s /var/service/mp3logger
+
+Important: the above service will fill up your disk if you don't also
+set up a cleaning service:
+
+  mkdir /var/service/mp3loggerc
+  cp example.clean /var/service/mp3loggerc/run
+  cd /var/service/mp3loggerc
+  chmod +x run
+  ln -s /PATH/TO/MP3/STORAGE mp3dir
+  mkdir log log/main
+  chown mp3loggerl log/main
+  chmod +t .
+  (echo '#!/bin/sh'; echo 'exec setuidgid mp3loggerl multilog t s99999 n3 ./main/') > log/run
+  chmod +x log/run
+  # test it:
+  ./run
+  # if it works, press control-C to stop it, then set up a supervised copy:
+  cd /service
+  ln -s /var/service/mp3logger
+
+To set up a publicly accessible MP3 stream.  Requires djb's ucspi-tcp
+software -- see http://cr.yp.to/ucspi-tcp.html
+
+  mkdir /var/service/mp3stream
+  cp example.stream /var/service/mp3stream/run
+  cd /var/service/mp3stream
+  chmod +x run
+  mkdir env
+  # replace MY.STREAM.IP.ADDRESS, MY.HOST.NAME, PORTNUMBER with your values
+  echo MY.STREAM.IP.ADDRESS >env/IP
+  echo MY.HOST.NAME >env/HOSTNAME
+  echo PORTNUMBER >env/PORT
+  pw useradd mp3stream -d /var/service/mp3stream
+  pw useradd mp3stream -d /var/service/mp3stream
+  mkdir log log/main
+  chown mp3stream log/main
+  chmod
+  chmod +t .
+  (echo '#!/bin/sh'; echo 'exec setuidgid mp3stream multilog t s99999 n3 ./main/') > log/run
+  chmod +x log/run
+  # test it:
+  ./run
+  # if it works, press control-C to stop it, then set up a supervised copy:
+  cd /service
+  ln -s /var/service/mp3logger

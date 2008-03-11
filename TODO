@@ -1,0 +1,92 @@
+. set volume control
+
+usage: mp3cat [args] { /indir | - } { /outdir | - }
+  --clean        try to discard everything but valid mp3 frames
+  --size 100000  roll over to dir/timestamp.pid.mp3 when file size >= 100000 (default = 1048000)
+  --keep 10      keep 10 most recent files, including current (default = 2)
+  --tail 10240   if possible, start reading 10240 bytes from end of input
+  /indir         read from /indir/current.mp3, reopen at eof if current (- = stdin)
+  /outdir        write to /outdir/current.mp3, lock dir/lock (- = stdout)
+
+Logger (keep 1-hour files for one week):
+
+[/service/mp3week/env/DSP]
+
+  /dev/dspW0
+
+[/service/mp3week/run]
+
+  cat `cat env/DSP` | \
+    lame -h -b 64 - - | \
+    mp3cat --clean --size `expr 3600 \* 8 \* 1024` --keep `expr 24 \* 7` - /var/log/mp3week/
+
+Stream:
+
+[/service/mp3stream/run]
+
+  tcpserver -u `id -u nobody` -g `id -g nobody` -vRl mp3stream.example.com \
+    mp3stream.example.com 80 \
+    ./mp3stream.sh \
+    2>&1
+
+[/service/mp3stream/mp3stream.sh]
+
+  read a
+  if echo "$a" | grep -q HTTP/1.1
+  then
+    while [ "x$a" != "x" ]
+    do
+      read a
+    done
+  fi
+  echo "KCR 200 OK Starting MP3 stream...
+Content-type: audio/mpeg
+
+"
+  exec mp3cat --clean --tail `expr 80 \* 1024` /var/log/oneweek/ -
+
+
+read () {
+  while (reading_dir && eof ()) {
+    has_rolled
+      = reading_dir && (current file's inode != current.mp3's inode);
+    if (has_rolled && eof ()) {
+      close();
+      open("<indir>/current.mp3");
+    } else {
+      usleep(100);
+    }
+  }
+  sysread ();
+  return bytes_read;
+}
+
+write (wanttowrite_buf, wanttowrite_bytes) {
+  int syswrite_bytes;
+  if (writing_dir && !file_open_for_writing) {
+    while (!open("<outdir>/current.mp3",
+                 O_APPEND|O_CREAT|O_WRONLY|O_NOFOLLOW)) {
+      sleep (1);
+    }
+  }
+  if (writing_dir
+      && Current_size >= Bytes_per_file
+      && timestamp() > last_file_timestamp) {
+    last_file_timestamp = timestamp();
+    close();
+    rename("current.mp3", "<last_file_timestamp>.mp3");
+    Current_size = 0;
+    open("current.mp3", "w");
+  }
+  while (wanttowrite_bytes > 0) {
+    syswrite_bytes = syswrite ()) < wanttowrite_bytes;
+    if(syswrite_bytes > 0) {
+      wanttowrite_bytes -= syswrite_bytes;
+      wanttowrite_buf += syswrite_bytes;
+      Current_size += syswrite_bytes;
+    }
+    if (wanttowrite_bytes > 0) { // disk full
+      sleep (1);
+    }
+  }
+}

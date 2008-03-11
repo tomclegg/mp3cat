@@ -1,0 +1,8 @@
+CHANGELOG for mp3cat
+
+      + add mp3log-conf
+
+      + write_buf.c: define O_NOFOLLOW if not defined by system header
+	files (might help when compiling under Linux)
+
+Release: 0.1

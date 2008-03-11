@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# accept connections on port 80 to ./mp3stream.sh
+#
+# this is installed in /var/service/mp3stream/run
+
+exec envdir ./env sh <<'EOF'
+  exec envuidgid ${USER-mp3stream} tcpserver -U \
+  -c 15 -vDR -l ${HOSTNAME-`hostname`} \
+  ${IP-0} ${PORT-8888} \
+  ./mp3stream.sh \
+  2>&1
+EOF

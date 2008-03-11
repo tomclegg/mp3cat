@@ -1,0 +1,42 @@
+#!/bin/sh
+
+me="`basename $0`"
+
+if [ $# != 5 ]
+then
+  echo >&2 "Usage: $me acct logacct /svcdir /mp3dir ip.address.of.stream"
+  exit 1
+fi
+
+USER="$1"
+LOGUSER="$2"
+SVCDIR="$3"
+MP3DIR="$4"
+IP="$5"
+
+if [ ! -e "$MP3DIR" ] ; then echo >&2 "$me: $MP3DIR does not exist"; exit 1; fi
+if [ -e "$SVCDIR" ] ; then echo >&2 "$me: $SVCDIR already exists"; exit 1; fi
+
+mkdir "$SVCDIR" || exit 1
+cd "$SVCDIR" || exit 1
+mkdir env || exit 1
+echo "$MP3DIR" >env/MP3DIR
+echo "$IP" >env/IP
+echo 80 >env/PORT
+
+cat <<RUN_EOF >run || exit 1
+#!/bin/sh
+exec env - PATH="\$PATH" envuidgid "$USER" envdir ./env sh <<'EOF'
+  exec tcpserver -U -c 15 -vDR -l 0 "\$IP" "\$PORT" mp3http 2>&1
+'EOF'
+RUN_EOF
+
+mkdir log log/main || exit 1
+chown "$LOGUSER" log/main || exit 1
+cat <<EOF_LOG_RUN >log/run || exit 1
+#!/bin/sh
+exec setuidgid "$LOGUSER" multilog t s99999 n2 ./main
+EOF_LOG_RUN
+
+chmod +x run log/run || exit 1
+chmod +t . || exit 1
