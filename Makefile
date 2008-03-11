@@ -1,7 +1,7 @@
 all: mp3cat
 mp3cat: *.c *.h
 	cc -o mp3cat *.c
-install: mp3cat mp3log mp3log-conf mp3stream-conf
+install:
 	install -o root -g 0 mp3cat /usr/local/bin/mp3cat
 	install -o root -g 0 mp3log /usr/local/bin/mp3log
 	install -o root -g 0 mp3log-conf /usr/local/bin/mp3log-conf
