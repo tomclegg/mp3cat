@@ -2,8 +2,8 @@ Installation notes for mp3cat
 
 To compile and install the mp3cat program:
 
-  tar xzf mp3cat-0.1.tar.gz
-  cd mp3cat-0.1
+  svn co http://svn.tomclegg.net/repos/trunk/mp3cat
+  cd mp3cat
   make install
 
 To clean up an MP3 file by removing everything other than valid MP3
