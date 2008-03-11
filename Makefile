@@ -1,8 +1,10 @@
 all: mp3cat
 mp3cat: *.c *.h
 	cc -o mp3cat *.c
-install:
+install: install_bin install_scripts
+install_bin: mp3cat
 	install -o root -g 0 mp3cat /usr/local/bin/mp3cat
+install_scripts:
 	install -o root -g 0 mp3log /usr/local/bin/mp3log
 	install -o root -g 0 mp3log-conf /usr/local/bin/mp3log-conf
 	install -o root -g 0 mp3dirclean /usr/local/bin/mp3dirclean

@@ -1,8 +1,15 @@
 #!/bin/sh
 
+N_DEFAULT="$N"
+if [ "$N_DEFAULT" = "" ] ; then N_DEFAULT=168 ; fi
+
 while :
 do
-    ls -t "$MP3DIR"/t*.mp3 | tail -n +"$N" | xargs rm 2>/dev/null
-    sleep 60
+  for x in mp3dir*
+  do
+    read N <"$x/N"
+    if [ "$N" = "" ] ; then N="$N_DEFAULT" ; fi
+    (cd "$x" && ls -t | egrep ^t | egrep '\.mp3$' | tail -n +"$N" | xargs rm -v 2>/dev/null)
+  done
+  sleep 60
 done
-EOF

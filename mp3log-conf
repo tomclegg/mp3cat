@@ -1,5 +1,6 @@
 #!/bin/sh
 
+set -ex
 me="`basename $0`"
 
 if [ $# != 6 ]
@@ -19,37 +20,41 @@ if [ -e "$MP3DIR" ] ; then echo >&2 "$me: $MP3DIR already exists"; exit 1; fi
 if [ -e "$SVCDIR" ] ; then echo >&2 "$me: $SVCDIR already exists"; exit 1; fi
 if [ -e "${SVCDIR}-clean" ] ; then echo >&2 "$me: ${SVCDIR}-clean already exists"; exit 1; fi
 
-mkdir "$SVCDIR-clean" || exit 1
-mkdir "$SVCDIR" || exit 1
-mkdir "$MP3DIR" || exit 1
-chown "$USER" "$MP3DIR" || exit 1
-cd "$SVCDIR" || exit 1
-mkdir env || exit 1
+mkdir "$SVCDIR-clean"
+mkdir "$SVCDIR"
+mkdir "$MP3DIR"
+chown "$USER" "$MP3DIR"
+cd "$SVCDIR"
+mkdir env
 echo "$KBITRATE" >env/KBITRATE
 echo "$DSPDEV" >env/DSPDEV
 echo "$MP3DIR" >env/MP3DIR
 
-cat <<EOF >run || exit 1
+cat <<EOF >run
 #!/bin/sh
 exec env - PATH="\$PATH" envdir ./env nice --5 setuidgid "$USER" mp3log 2>&1
 EOF
 
-mkdir log log/main || exit 1
-chown "$LOGUSER" log/main || exit 1
-cat <<EOF_LOG_RUN >log/run || exit 1
+mkdir log log/main
+chown "$LOGUSER" log/main
+cat <<EOF_LOG_RUN >log/run
 #!/bin/sh
 exec setuidgid "$LOGUSER" multilog t s99999 n2 ./main
 EOF_LOG_RUN
 
-chmod +x run log/run || exit 1
-chmod +t . || exit 1
+chmod +x run log/run
+chmod +t .
 
-cd "$SVCDIR-clean" || exit 1
-mkdir env || exit 1
+cd "$SVCDIR-clean"
+mkdir env
 echo "$MP3DIR" >env/MP3DIR
+ln -s "$MP3DIR" mp3dir
+echo 3 >"$MP3DIR"/N
 echo 3 >env/N
-cat <<EOF >run || exit 1
+cat <<EOF >run
 #!/bin/sh
 exec env - PATH="\$PATH" envdir ./env nice setuidgid "$USER" mp3dirclean
 EOF
-chmod +x run || exit 1
+chmod +x run
+
+echo Finished.
