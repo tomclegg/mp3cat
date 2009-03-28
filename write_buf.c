@@ -8,6 +8,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <errno.h>
 
 #ifndef O_NOFOLLOW
@@ -71,14 +72,18 @@ int write_buf (const char* buffer, int wanttowrite,
       buffer += syswrite_bytes;
     }
     else if (!outfile && syswrite_bytes < 0 && errno != EAGAIN) {
+      if (errno == EPIPE)
+	exit (0);
       fprintf(stderr, "Write failed (%s), giving up.\n", strerror(errno));
       exit (1);
     }
     if (wanttowrite > 0) { /* disk full? */
-      if (syswrite_bytes >= 0)
-	fprintf(stderr, "Couldn't write %d bytes (only wrote %d), trying again\n", wanttowrite, syswrite_bytes);
-      else
-	fprintf(stderr, "Couldn't write %d bytes (%s), trying again\n", wanttowrite, strerror(errno));
+      char* errorstring = strerror(errno);
+      fprintf(stderr,
+	      "write() only wrote %d of %d bytes (%s), trying again\n",
+	      syswrite_bytes > 0 ? syswrite_bytes : 0,
+	      wanttowrite,
+	      errorstring ? errorstring : "unknown error");
       sleep (1);
     }
   }
