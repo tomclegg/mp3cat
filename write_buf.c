@@ -51,7 +51,7 @@ int write_buf (const char* buffer, int wanttowrite,
       strcpy (newfilename, outfile_prefix);
       if (newfilename [strlen (newfilename) - 1] != '/')
 	strcat (newfilename, "/");
-      sprintf (&newfilename[strlen(newfilename)], "t%d.mp3", current_time);
+      sprintf (&newfilename[strlen(newfilename)], "t%d.mp3", (int)current_time);
       rename (outfile, newfilename);
       free (newfilename);
       while (0 > (newfd = open (outfile, O_CREAT|O_WRONLY|O_NOFOLLOW, 0x1ff))) {
