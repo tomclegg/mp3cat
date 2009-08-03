@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <stdio.h>
+#include <string.h>
 
 static int Infile_is_open=0;
 static int Infd=STDIN_FILENO;
