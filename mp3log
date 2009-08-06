@@ -9,5 +9,5 @@ mixer =rec line
 mixer rec 90
 exec \
     dsprec -f "$DSPDEV" channels 2 rate 44100 bits 16 | \
-    lame -h -x -b "$KBITRATE" -a - - | \
+    lame -r -h -x -b "$KBITRATE" -a - - | \
     mp3cat --clean --size "$((60 * 60 * $KBITRATE * 1000 / 8))" - "$MP3DIR"
