@@ -110,7 +110,7 @@ int main(int argc, char * const * argv)
     Infile = 0;
   else {
     if (!(Infile = malloc (strlen (argv[arg]) + 21))) {
-      fprintf (stderr, "Couldn't allocate %d bytes; giving up.", strlen (argv[arg]) + 21);
+      fprintf (stderr, "Couldn't allocate %lu bytes; giving up.", strlen (argv[arg]) + 21);
       exit (1);
     }
     strcpy (Infile, argv[arg]);
@@ -126,7 +126,7 @@ int main(int argc, char * const * argv)
   else {
     Outfile_prefix = argv[arg];
     if (!(Outfile = malloc (strlen (argv[arg]) + 21))) {
-      fprintf (stderr, "Couldn't allocate %d bytes; giving up.", strlen (argv[arg]) + 21);
+      fprintf (stderr, "Couldn't allocate %lu bytes; giving up.", strlen (argv[arg]) + 21);
       exit (1);
     }
     strcpy (Outfile, argv[arg]);
