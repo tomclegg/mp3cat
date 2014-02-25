@@ -39,7 +39,7 @@ int frame_length (const char* const buf, const int bufsize, int verbose, int *sa
   /* make sure first 11 bits are on */
   if (buf[0] != '\377')
     return 0;
-  if (buf[1] & '\340' != '\340')
+  if ((buf[1] & '\340') != '\340')
     return 0;
 
   /* discover version: 0=2.5, 1=reserved, 2=2, 3=1  */
