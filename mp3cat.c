@@ -47,7 +47,6 @@ int main(int argc, char * const * argv)
   int Bytes_per_file=1000000;
   int Tail_bytes=BUFMAX*2;
   int Verbose=0;
-  int Clean=1;
   int arg;
 
   for (arg=1; arg<argc && argv[arg][0] == '-' && argv[arg][1] != '\0'; arg++) {
@@ -58,9 +57,9 @@ int main(int argc, char * const * argv)
 		 argv[arg]);
     }
     else if (!strcmp (argv[arg], "--clean"))
-      Clean=1;
+      ; // no-op
     else if (!strcmp (argv[arg], "--noclean"))
-      Clean=0;
+      ; // no-op
     else if (arg+1<argc && !strcmp (argv[arg], "--size")) {
       int param;
       if (sscanf (argv[arg+1], "%d", &param))
@@ -87,8 +86,6 @@ int main(int argc, char * const * argv)
 "Usage: %s [options] { indir | - } { outdir | - }\n"
 "\n"
 "Options:\n"
-"  --noclean     Output entire input data, even if it contains stuff\n"
-"                other than mp3 frames.\n"
 "  --size bytes  Set target size for mp3 files (mp3dir output only;\n"
 "                default 1000000).\n"
 "  --tail bytes  How far from the end of current.mp3 to start reading\n"
