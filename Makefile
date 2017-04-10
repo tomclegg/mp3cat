@@ -4,7 +4,7 @@ INSTALL_GROUP?=$(shell id -g)
 INSTALL_COMMAND?=install -o $(INSTALL_USER) -g $(INSTALL_GROUP) -m 0555
 all: mp3cat
 mp3cat: *.c *.h
-	cc -o mp3cat *.c
+	cc -Wall -o mp3cat *.c
 install: install_bin install_scripts
 install_bin: mp3cat
 	mkdir -p $(PREFIX)/bin

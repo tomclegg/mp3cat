@@ -1,6 +1,6 @@
 /* $Id: write_buf.c,v 1.1.1.1 2003/05/04 22:02:23 tom Exp $ */
 
-#include "read_buf.h"
+#include "write_buf.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -19,10 +19,10 @@ static int Outfile_is_open=0;
 static time_t Last_timestamp=0;
 static int Outfd=STDOUT_FILENO;
 
-int write_buf (const char* buffer, int wanttowrite,
-	       const char* const outfile,
-	       const char* const outfile_prefix,
-	       const int bytes_per_file)
+void write_buf (const char* buffer, int wanttowrite,
+                const char* const outfile,
+                const char* const outfile_prefix,
+                const int bytes_per_file)
 {
   int syswrite_bytes, newfd;
   struct stat statbuf;
