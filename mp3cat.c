@@ -1,5 +1,3 @@
-/* $Id: mp3cat.c,v 1.1.1.1 2003/05/04 22:02:23 tom Exp $ */
-
 /* mp3cat
  *
  * Copyright 2002 Tom Clegg

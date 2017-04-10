@@ -1,5 +1,3 @@
-/* $Id: frame.h,v 1.1.1.1 2003/05/04 22:02:23 tom Exp $ */
-
 #ifndef __FRAME__
 #define __FRAME__
 

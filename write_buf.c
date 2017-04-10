@@ -1,5 +1,3 @@
-/* $Id: write_buf.c,v 1.1.1.1 2003/05/04 22:02:23 tom Exp $ */
-
 #include "write_buf.h"
 #include <sys/types.h>
 #include <sys/stat.h>
