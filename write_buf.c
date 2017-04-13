@@ -43,7 +43,7 @@ void write_buf (const char* buffer, int wanttowrite,
 	&& time(&current_time) > Last_timestamp) {
       Last_timestamp = current_time;
       while (!(newfilename = malloc (strlen(outfile_prefix)+21))) {
-	fprintf(stderr, "Couldn't allocate %lu bytes, trying again\n", strlen(outfile_prefix)+21);
+	fprintf(stderr, "Couldn't allocate %zu bytes, trying again\n", strlen(outfile_prefix)+21);
 	sleep (1);
       }
       strcpy (newfilename, outfile_prefix);
