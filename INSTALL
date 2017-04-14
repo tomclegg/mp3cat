@@ -2,7 +2,7 @@ Installation notes for mp3cat
 
 To compile and install the mp3cat program:
 
-  svn co http://svn.tomclegg.net/repos/trunk/mp3cat
+  git clone https://github.com/tomclegg/mp3cat
   cd mp3cat
   make install
 
