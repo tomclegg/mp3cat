@@ -23,6 +23,7 @@ Filtering mp3 files
 mp3cat can read a stream from standard input and write to standard output:
 
     $ mp3cat - - < infile.mp3 > outfile.mp3
+    $ cat infiles/*.mp3 | mp3cat - - > outfile.mp3
 
 mp3cat only outputs MP3 frames with valid headers, even if there is extra garbage in its input stream.
 
